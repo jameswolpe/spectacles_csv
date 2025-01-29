@@ -343,7 +343,7 @@ def main() -> None:
                 concurrency=args.concurrency,
             )
         )
-    elif args.command == "content1":
+    elif args.command == "content":
         asyncio.run(
             run_content(
                 project=args.project,
