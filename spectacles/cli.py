@@ -263,7 +263,7 @@ def main(input_args=None) -> None:
         )
 
     # Convert leading `-` to `~` so they don't break `parse_args`
-    inputs = [preprocess_dash(arg) for arg in sys.argv[1:]]
+    inputs = [preprocess_dash(arg) for arg in (input_args if input_args else sys.argv[1:])]
     parser = create_parser()
     args = parser.parse_args(inputs)
 
