@@ -272,7 +272,7 @@ def main(input_args=None, **kwargs) -> None:
     ref = branch or commit_ref
     target = getattr(args, "target", None)
     incremental = getattr(args, "incremental", None)
-    to_csv = getattr(args, "to_csv", None)
+    csv = getattr(args, "csv", None)
 
     pin_imports = process_pin_imports(getattr(args, "pin_imports", []))
 
@@ -357,7 +357,7 @@ def main(input_args=None, **kwargs) -> None:
                 api_version=args.api_version,
                 remote_reset=args.remote_reset,
                 incremental=args.incremental,
-                to_csv=args.incremental,
+                csv=args.csv,
                 target=args.target,
                 exclude_personal=args.exclude_personal,
                 folders=[restore_dash(arg) for arg in args.folders],
@@ -745,6 +745,13 @@ def _build_content_subparser(
         ),
     )
     subparser.add_argument(
+        "--csv",
+        action="store_true",
+        help=(
+            "Outputs results to CSV"
+        ),
+    )
+    subparser.add_argument(
         "--target",
         help=(
             "The branch name or commit SHA to compare to for incremental testing. "
@@ -859,7 +866,7 @@ async def run_content(
     folders: List[str],
     pin_imports: Dict[str, str],
     use_personal_branch: bool,
-    to_csv: bool
+    csv: bool
 ) -> None:
     # Don't trust env to ignore .netrc credentials
     async_client = httpx.AsyncClient(trust_env=False)
@@ -883,8 +890,12 @@ async def run_content(
     # for test in sorted(results["tested"], key=lambda x: (x["model"], x["explore"])):
     #     message = f"{test['model']}.{test['explore']}"
     #     printer.print_validation_result(status=test["status"], source=message)
-    if to_csv:
-        print("TODO")
+    if csv:
+        errors = sorted(
+            results["errors"],
+            key=lambda x: (x["metadata"]["url"]),
+        )
+        return errors, ref
     else:
         errors = sorted(
             results["errors"],
