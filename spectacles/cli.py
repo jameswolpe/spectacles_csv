@@ -272,6 +272,7 @@ def main(input_args=None, **kwargs) -> None:
     ref = branch or commit_ref
     target = getattr(args, "target", None)
     incremental = getattr(args, "incremental", None)
+    to_csv = getattr(args, "to_csv", None)
 
     pin_imports = process_pin_imports(getattr(args, "pin_imports", []))
 
@@ -356,6 +357,7 @@ def main(input_args=None, **kwargs) -> None:
                 api_version=args.api_version,
                 remote_reset=args.remote_reset,
                 incremental=args.incremental,
+                to_csv=args.incremental,
                 target=args.target,
                 exclude_personal=args.exclude_personal,
                 folders=[restore_dash(arg) for arg in args.folders],
@@ -857,6 +859,7 @@ async def run_content(
     folders: List[str],
     pin_imports: Dict[str, str],
     use_personal_branch: bool,
+    to_csv: bool
 ) -> None:
     # Don't trust env to ignore .netrc credentials
     async_client = httpx.AsyncClient(trust_env=False)
@@ -880,28 +883,30 @@ async def run_content(
     # for test in sorted(results["tested"], key=lambda x: (x["model"], x["explore"])):
     #     message = f"{test['model']}.{test['explore']}"
     #     printer.print_validation_result(status=test["status"], source=message)
-
-    errors = sorted(
-        results["errors"],
-        key=lambda x: (x["model"], x["explore"], x["metadata"]["field_name"]),
-    )
-    if errors:
-        for error in errors:
-            printer.print_content_error(
-                error["model"],
-                error["explore"],
-                error["message"],
-                error["metadata"]["content_type"],
-                error["metadata"].get("tile_type"),
-                error["metadata"].get("tile_title"),
-                error["metadata"]["folder"],
-                error["metadata"]["title"],
-                error["metadata"]["url"],
-            )
-        logger.info("")
-        raise GenericValidationError
+    if to_csv:
+        print("TODO")
     else:
-        logger.info("")
+        errors = sorted(
+            results["errors"],
+            key=lambda x: (x["model"], x["explore"], x["metadata"]["field_name"]),
+        )
+        if errors:
+            for error in errors:
+                printer.print_content_error(
+                    error["model"],
+                    error["explore"],
+                    error["message"],
+                    error["metadata"]["content_type"],
+                    error["metadata"].get("tile_type"),
+                    error["metadata"].get("tile_title"),
+                    error["metadata"]["folder"],
+                    error["metadata"]["title"],
+                    error["metadata"]["url"],
+                )
+            logger.info("")
+            raise GenericValidationError
+        else:
+            logger.info("")
 
 
 @log_duration
