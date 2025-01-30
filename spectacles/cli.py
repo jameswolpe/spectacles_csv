@@ -253,7 +253,7 @@ def process_pin_imports(input: List[str]) -> dict[str, str]:
 
 
 @handle_exceptions
-def main(input_args=None) -> None:
+def main(input_args=None, **kwargs) -> None:
     """Runs main function. This is the entry point."""
     if sys.version_info < (3, 9):
         raise SpectaclesException(

@@ -136,6 +136,9 @@ class ContentValidator:
         self, project: Project, result: Dict[str, Any], content_type: str
     ) -> List[ContentError]:
         content_errors: List[ContentError] = []
+        # FIXME model_name = '\n'.join([f"{i + 1}. {error['model_name']}" for i, error in enumerate(result["errors"])])
+        # FIXME explore_name = '\n'.join([f"{i + 1}. {error['explore_name']}" for i, error in enumerate(result["errors"])])
+
         for error in result["errors"]:
             model_name = error["model_name"]
             explore_name = error["explore_name"]
