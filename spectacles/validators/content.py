@@ -133,12 +133,12 @@ class ContentValidator:
             )
 
     def _get_errors_from_result(
-        self, project: Project, result: Dict[str, Any], content_type: str
+            self, project: Project, result: Dict[str, Any], content_type: str
     ) -> List[ContentError]:
         content_errors: List[ContentError] = []
-        # FIXME model_name = '\n'.join([f"{i + 1}. {error['model_name']}" for i, error in enumerate(result["errors"])])
-        # FIXME explore_name = '\n'.join([f"{i + 1}. {error['explore_name']}" for i, error in enumerate(result["errors"])])
-
+        model_name_list = '\n'.join([f"{i + 1}. {error['model_name']}" for i, error in enumerate(result["errors"])])
+        explore_name_list = '\n'.join([f"{i + 1}. {error['explore_name']}" for i, error in enumerate(result["errors"])])
+        error_message_list = '\n'.join([f"{i + 1}. {error['message']}" for i, error in enumerate(result["errors"])])
         for error in result["errors"]:
             model_name = error["model_name"]
             explore_name = error["explore_name"]
@@ -153,14 +153,15 @@ class ContentValidator:
                 folder = result[content_type].get("folder")
                 folder_name: Optional[str] = folder.get("name") if folder else None
                 content_error = ContentError(
-                    model=model_name,
-                    explore=explore_name,
-                    message=error["message"],
+                    model=model_name_list,
+                    explore=explore_name_list,
+                    message=error_message_list,
                     field_name=error["field_name"],
                     content_type=content_type,
                     title=result[content_type]["title"],
                     folder=folder_name,
                     url=f"{self.client.base_url}/{content_type}s/{content_id}",
+                    content_id=content_id,
                     tile_type=(
                         self._get_tile_type(result)
                         if content_type == "dashboard"

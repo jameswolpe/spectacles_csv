@@ -253,7 +253,7 @@ def process_pin_imports(input: List[str]) -> dict[str, str]:
 
 
 @handle_exceptions
-def main(input_args=None, **kwargs) -> None:
+def main(input_args=None, **kwargs):
     """Runs main function. This is the entry point."""
     if sys.version_info < (3, 9):
         raise SpectaclesException(
@@ -345,7 +345,8 @@ def main(input_args=None, **kwargs) -> None:
             )
         )
     elif args.command == "content":
-        asyncio.run(
+
+        broken_content = asyncio.run(
             run_content(
                 project=args.project,
                 ref=ref,
@@ -365,6 +366,7 @@ def main(input_args=None, **kwargs) -> None:
                 use_personal_branch=args.use_personal_branch,
             )
         )
+        return broken_content
     elif args.command == "lookml":
         asyncio.run(
             run_lookml(
@@ -897,7 +899,7 @@ async def run_content(
         )
         if errors:
             logger.info("")
-            return errors, ref
+            return errors
         else:
             logger.info("")
 
