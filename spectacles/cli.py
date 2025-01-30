@@ -1064,6 +1064,8 @@ async def run_sql(
     else:
         logger.info("")
 
+def entry_point():
+    main()
 
 if __name__ == "__main__":
     main()
