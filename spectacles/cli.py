@@ -1064,5 +1064,18 @@ async def run_sql(
     else:
         logger.info("")
 
+def entry_point(args=None):
+    """Entry point for Spectacles CLI."""
+    if args is None:
+        args = sys.argv[1:]
+
+    if sys.version_info < (3, 9):
+        raise SpectaclesException(
+            name="insufficient-python-version",
+            title="Spectacles requires Python 3.9 or higher.",
+            detail="The current Python version is %s." % platform.python_version(),
+        )
+    main(input_args=args)
+
 if __name__ == "__main__":
-    main()
+    entry_point()
