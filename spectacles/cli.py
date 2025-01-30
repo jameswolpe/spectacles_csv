@@ -867,7 +867,7 @@ async def run_content(
     pin_imports: Dict[str, str],
     use_personal_branch: bool,
     csv: bool
-) -> None:
+):
     # Don't trust env to ignore .netrc credentials
     async_client = httpx.AsyncClient(trust_env=False)
     try:
@@ -895,7 +895,12 @@ async def run_content(
             results["errors"],
             key=lambda x: (x["metadata"]["url"]),
         )
-        return errors, ref
+        if errors:
+            logger.info("")
+            return errors, ref
+        else:
+            logger.info("")
+
     else:
         errors = sorted(
             results["errors"],
