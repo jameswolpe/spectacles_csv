@@ -877,9 +877,9 @@ async def run_content(
     finally:
         await async_client.aclose()
 
-    for test in sorted(results["tested"], key=lambda x: (x["model"], x["explore"])):
-        message = f"{test['model']}.{test['explore']}"
-        printer.print_validation_result(status=test["status"], source=message)
+    # for test in sorted(results["tested"], key=lambda x: (x["model"], x["explore"])):
+    #     message = f"{test['model']}.{test['explore']}"
+    #     printer.print_validation_result(status=test["status"], source=message)
 
     errors = sorted(
         results["errors"],
