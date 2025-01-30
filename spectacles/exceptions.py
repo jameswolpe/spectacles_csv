@@ -185,10 +185,12 @@ class ContentError(ValidationError):
         title: str,
         folder: Optional[str],
         url: str,
+        content_id: Optional[str] = None,
         tile_type: Optional[str] = None,
         tile_title: Optional[str] = None,
     ):
         metadata = {
+            "content_id": content_id,
             "field_name": field_name,
             "content_type": content_type,
             "title": title,
