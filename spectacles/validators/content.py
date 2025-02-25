@@ -139,6 +139,10 @@ class ContentValidator:
         model_name_list = '\n'.join([f"{i + 1}. {error['model_name']}" for i, error in enumerate(result["errors"])])
         explore_name_list = '\n'.join([f"{i + 1}. {error['explore_name']}" for i, error in enumerate(result["errors"])])
         error_message_list = '\n'.join([f"{i + 1}. {error['message']}" for i, error in enumerate(result["errors"])])
+        dashboard_element = result.get("dashboard_element")
+        is_merge = "Yes" if dashboard_element is not None and dashboard_element.get("query_id") is None else "No"
+        is_filter = "Yes" if result["dashboard_filter"] else "No"
+        is_scheduled = "Yes" if result["scheduled_plan"] else "No"
         for error in result["errors"]:
             model_name = error["model_name"]
             explore_name = error["explore_name"]
@@ -152,16 +156,25 @@ class ContentValidator:
                 content_id = result[content_type]["id"]
                 folder = result[content_type].get("folder")
                 folder_name: Optional[str] = folder.get("name") if folder else None
+                folder_id: Optional[int] = folder.get("id") if folder else None
                 content_error = ContentError(
-                    model=model_name_list,
-                    explore=explore_name_list,
-                    message=error_message_list,
+                    model=model_name,
+                    explore=explore_name,
+                    message=error["message"],
                     field_name=error["field_name"],
                     content_type=content_type,
                     title=result[content_type]["title"],
                     folder=folder_name,
+                    folder_url=f"{self.client.base_url}/folders/{folder_id}",
+                    folder_id=folder_id,
                     url=f"{self.client.base_url}/{content_type}s/{content_id}",
                     content_id=content_id,
+                    is_merge=is_merge,
+                    is_filter=is_filter,
+                    is_scheduled=is_scheduled,
+                    model_name_list=model_name_list,
+                    explore_name_list=explore_name_list,
+                    error_message_list=error_message_list,
                     tile_type=(
                         self._get_tile_type(result)
                         if content_type == "dashboard"
@@ -179,5 +192,4 @@ class ContentValidator:
                 elif model and content_error not in model.errors:
                     model.errors.append(content_error)
                     content_errors.append(content_error)
-
         return content_errors

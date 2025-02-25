@@ -68,7 +68,7 @@ def log_duration(
             elapsed_str = human_readable(int(elapsed))
             message_detail = get_detail(fn.__name__)
 
-            logger.info(f"Completed {message_detail}validation in {elapsed_str}.\n")
+            #logger.info(f"Completed {message_detail}validation in {elapsed_str}.\n")
         return result
 
     return timed_function
